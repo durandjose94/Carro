@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <title>Carros Scania</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <!--COLOR DE LA APLICACION-->
+        <!--<META NAME="theme-color" content ="fFB314E" />-->
+        <!--OPTIMIZACION PARA MOVIL-->
+        <meta name="MobileOptimized" content="width"/>
+        <meta name="HandheldFriendly" content="true"/>
+
+        <!--META ETIQUETAS PWWA PAR APPLE-->
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
+        <!--<link rel="apple-touch-icon" href="img/favicon.png" />-->
+        <!--<link rel="apple-touch-startup-image" href="img/favicon.png" />-->
+
+        <!--CONFIGURACION GENERAL PWA-->
+        <link rel="manifest" href="manifest.json"/>
+        
+        
+        <script src="main.js"></script>  
+</head>
+<body>
+
+    <div>
+        <h2>Carros</h2>
+        <ul id="carros" />
+    </div>
+    <div>
+        <h2>Busqueda por ID</h2>
+        <input type="text" id="carId" size="5" />
+        <input type="button" value="Buscar" onclick="find();" />
+        <p id="carro" />
+    </div>
+
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script>
+        var uri = '177.91.250.50/api/carro';
+
+        $(document).ready(function () {
+            // Send an AJAX request
+            $.getJSON(uri)
+                .done(function (data) {
+                  
+                    $.each(data, function (key, item) {
+
+                        $('<li>', { text: formatItem(item) }).appendTo($('#carros'));
+                    });
+                });
+        });
+
+        function formatItem(item) {
+            return item.idcarro + '-' + item.marca + '-' + item.modelo;
+        }
+
+        function find() {
+            var id = $('#carId').val();
+            $.getJSON(uri + '/' + id)
+                .done(function (data) {
+                    $('#carro').text(formatItem(data));
+                })
+                .fail(function (jqXHR, textStatus, err) {
+                    $('#carro').text('Error: ' + err);
+                });
+        }
+    </script>
+</body>
+</html>
